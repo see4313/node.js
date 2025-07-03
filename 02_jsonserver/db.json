@@ -1,18 +1,18 @@
 {
   "posts": [
     {
-      "id": 2,
-      "title": "JSON서버에서 추가함",
-      "author": "json"
+      "id": "5",
+      "title": "진심개더워;;",
+      "author": "admin"
     },
     {
-      "id": 3,
-      "title": "JSON서버에 삭제기능첵",
-      "author": "jsan"
+      "id": "8",
+      "title": "fetch잠와",
+      "author": "admin"
     },
     {
-      "id": 9,
-      "title": "fetch연습",
+      "id": "7",
+      "title": "fetch뭔말인지요",
       "author": "admin"
     }
   ]
