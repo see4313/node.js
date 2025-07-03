@@ -14,6 +14,11 @@
       "id": "7",
       "title": "fetch뭔말인지요",
       "author": "admin"
+    },
+    {
+      "id": "3",
+      "title": "JSON서버에 삭제기능첵",
+      "author": "jsan"
     }
   ]
 }
