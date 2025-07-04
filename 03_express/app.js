@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     //저장경로
-    cb(null, "uploads"); // cb() = callback 함수
+    cb(null, "uploads"); // cb() = callback 함수, // uploads 경로에 올림
   },
   filename: function (req, file, cb) {
     // 업로드되는 파일 이름
