@@ -1,6 +1,13 @@
 const { query } = require(".");
 
 module.exports = {
+  //todo목록
+  todoList: { query: `select * from tbl_todo` },
+
+  //todo 삭제
+  todoDelete: { query: `delete from tbl_todo where id = ?` },
+
+  //상품목록
   productList: {
     query: `select t1.*, t2.path, t3.category1, t3.category2, t3.category3
            from t_product t1, t_image t2, t_category t3

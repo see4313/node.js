@@ -2,6 +2,7 @@
 const mysql = require("mysql2");
 const sql = require("./product.js"); // {custList, }
 
+// db에서 사용할수 있게끔 환경변수 만들어줌
 const pool = mysql.createPool({
   //.ENV에 지정해놓은 변수명대로 적어주면 됨
   host: process.env.HOST,
@@ -19,10 +20,11 @@ async function query(alias, values = [], where = "") {
   return new Promise((resolve, reject) => {
     console.log(sql[alias].query + where);
     pool.query(sql[alias].query + where, values, (err, result) => {
+      // 실행이 되면 result에 담고, 실행에 실패하면 err변수에 담음
       if (err) {
         console.log("처리중 에러", err);
       } else {
-        resolve(result);
+        resolve(result); // 실패했을때는 reject변수에 담아줌, 성공하면 resolve함수에 담아줌
       }
     });
   });
