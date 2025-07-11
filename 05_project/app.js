@@ -18,7 +18,7 @@ if (!fs.existsSync(uploadDir)) {
 
 //body-parser
 app.use(express.json({ limit: "10mb" }));
-app.use(cors()); //소스가 다른곳에서 들어오더라도 실행되게 해줌 (3000번 포트와 8080포트)
+app.use(cors()); //소스가 다른곳에서 들어오더라도 실행되게 해줌 (3000번 포트와 8080포트) // CORS 처리
 
 app.listen(3000, () => {
   // listen 은 서버 실행하겠다는 메소드
@@ -40,6 +40,7 @@ app.get("/fileupload", (req, res) => {
 app.get("/download/:productId/:fileName", (req, res) => {
   const { productId, fileName } = req.params; //params = :productId를 말함
   const filepath = `${__dirname}/uploads/${productId}/${fileName}`; // ${__dirname} => d:/dev/git/node/ 안에 경로를 말함
+
   //응답정보.
   res.header(
     "Content-Type",
@@ -55,9 +56,9 @@ app.get("/download/:productId/:fileName", (req, res) => {
 });
 
 // 파일 업로드
-app.post("/upload/:filename/:pid", (req, res) => {
+app.post("/upload/:filename/:pid/:type", (req, res) => {
   // 추가로 파라미터가 더 있으면 : 사용해서 더 적어주면 됨
-  const { filename, pid } = req.params; //{filename: 'sample.jpg', product: 3}
+  const { filename, pid, type } = req.params; //{filename: 'sample.jpg', product: 3}
   // const filePath = `${__dirname}/uploads/${pid}/${filename}`; //../05_project/uploads/sample.jpg와 같은 의미   // html/script처럼 join사용하거나 ``(백틱)도 사용가능
 
   // 8번 폴더를 만들어주는 코드 (8번 폴더가 없으면 폴더를 만들어서 거기에 이미지 넣음)
@@ -69,17 +70,26 @@ app.post("/upload/:filename/:pid", (req, res) => {
   const safeFilename = path.basename(filename); // 경로공격
   const filePath = path.join(uploadDir, pid, safeFilename);
 
-  let data = req.body.data.slice(req.body.data.indexOf(";base64,") + 8); // 요청정보의 body의 data라는 속성읽어옴
-  //slice 메소드를 사용해서 base64다음으로 8자리 잘라서 사용
-  fs.writeFile(filePath, data, "base64", (err) => {
-    if (err) {
-      res.send("error");
-    } else {
+  try {
+    let data = req.body.data.slice(req.body.data.indexOf(";base64,") + 8); // 요청정보의 body의 data라는 속성읽어옴
+    //slice 메소드를 사용해서 base64다음으로 8자리 잘라서 사용
+    fs.writeFile(filePath, data, "base64", async (err) => {
+      //pid, type, filename 를 DB에 instert
+      await query("productImageInsert", [
+        { product_id: pid, type: type, path: filename },
+      ]);
+      if (err) {
+        res.send("err");
+        return res.status(500).send("error");
+      }
       res.send("success");
-    }
-  });
+    });
+  } catch (err) {
+    res.status(400).send("invalid data");
+  }
 });
 
+//데이터 쿼리하는 부분
 // :alias는 파라미터값
 app.post("/api/:alias", async (req, res) => {
   //라우팅정보를 통해서 실행할 쿼리지정. localhost:3000/api/productList
