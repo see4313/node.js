@@ -79,4 +79,8 @@ module.exports = {
     query: `insert into t_user set ? 
             on duplicate key update ?`,
   },
+  // 추가 이미지삭제
+  plusImageDelete: {
+    query: `delete from t_image where product_id = ?`,
+  },
 };
